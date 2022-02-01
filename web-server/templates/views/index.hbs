@@ -3,41 +3,6 @@
 
 <head>
     <link rel="stylesheet" href="./css/style.css">
-    <!-- Begin SessionStack code -->
-    <!-- Begin SessionStack-Sentry code -->
-<script type="text/javascript">
-SessionStack.getSessionId(function(sessionId) {
-    Sentry.configureScope(scope => {
-        scope.addEventProcessor(async event => {
-            event.contexts = {
-                sessionstack: {
-                    session_id: sessionId,
-                    timestamp: (new Date()).getTime()
-                }
-            };
-
-            return event;
-        });
-    });
-});
-</script>
-<!-- End SessionStack-Sentry code -->
-
-    <script type="text/javascript">
-        !function (a, b) {
-            var c = window; c.SessionStackKey = a, c[a] = c[a] || {
-                t: b,
-                q: []
-            }; for (var d = ["start", "stop", "identify", "getSessionId", "log", "setOnDataCallback"], e = 0; e < d.length; e++)!function (b) {
-                c[a][b] = c[a][b] || function () {
-                    c[a].q.push([b].concat([].slice.call(arguments, 0)));
-                }
-            }(d[e]); var f = document.createElement("script"); f.async = 1, f.crossOrigin = "anonymous",
-                f.src = "https://cdn.sessionstack.com/sessionstack.js"; var g = document.getElementsByTagName("script")[0];
-            g.parentNode.insertBefore(f, g)
-        }("SessionStack", "7b7c8978b4264105adf64f8e8cd8d344");
-    </script>
-    <!-- End SessionStack Code -->
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
