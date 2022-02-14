@@ -4,12 +4,15 @@ const sharp = require('sharp');
 const User = require("../models/user");
 const router = new express.Router();
 const auth = require('../middleware/auth');
+const { sendWelcomeMail ,sendCancelationMail } = require('../emails/email')
+
 
 router.post("/users", async (req, res) => {
     const user = new User(req.body);
 
-    await user.save()
     try {
+        await user.save()
+        sendWelcomeMail(user.name , user.email)
         const token = await user.generateAuthToken();
         res.status(201).send({ user, token });
     }
@@ -37,7 +40,7 @@ const upload = multer({
         if (!file.originalname.match(/\.(jpg|png|jpeg)$/)) {
             return cb(new Error('Please upload a jpg or jpeg or png file'))
         }
-
+        
         cb(undefined, true)
     }
 })
@@ -131,18 +134,17 @@ router.patch("/users/me", auth, async (req, res) => {
     }
 });
 
-router.delete('/users/me', auth, async (req, res) => {
+router.delete("/users/me", auth, async (req, res) => {
     try {
         // const user = await User.findByIdAndDelete(req.user._id)
         // if (!user)
         //     return res.status(404).send("User not found")
         await req.user.remove()
+        sendCancelationMail(req.user.email , req.user.name)
         res.status(200).send(req.user)
-
     } catch (err) {
-        res.status(500).send(err);
+        res.status(400).send(err)
     }
-
 })
 
 module.exports = router;
