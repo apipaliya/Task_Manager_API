@@ -17,10 +17,20 @@ router.post('/tasks', auth,(req, res) => {
     })
 })
 
+//GET /tasks?completed=true
 router.get('/tasks',auth, async(req, res) => {
+    const match = {}
+
+    if(req.query.completed){
+        match.completed = req.query.completed === 'true'
+    }
+
     try{
-        await req.user.populate('tasks').execPolpulate()
-        res.status(200).send(req.user.tasks)
+        await req.user.populate({
+            path:'tasks',
+            match
+        })
+        res.status(200).send(req.user.tasks)    
     }catch(err) {
         res.status(500).send(err)
     }
@@ -35,8 +45,8 @@ router.get('/tasks/:id',auth, async(req, res) => {
             return res.status(404).send()
         }
         res.send(task)
-    }catch(e) {
-        res.status(500).send()
+    }catch(err) {
+        res.status(500).send(err)
     }
 })
 
@@ -57,7 +67,8 @@ router.patch("/tasks/:id", auth ,async (req, res) => {
         //     new: true,
         //     runValidators: true,
         // });
-        const task = await Task.findOneAndUpdate({_id, owner: req.user._id})
+        const task = await Task.findOne({_id:req.params.id, owner: req.user._id})
+        console.log(task);
         if (!task) {
             return res.status(404).send();
         }
@@ -66,7 +77,7 @@ router.patch("/tasks/:id", auth ,async (req, res) => {
         await task.save(); 
         res.send(task);
     } catch (err) {
-        res.status(500).send(e);
+        res.status(500).send(err);
     }
 });
 
@@ -79,7 +90,7 @@ router.delete('/tasks/:id', auth ,async (req, res) => {
         res.send(task);
 
     } catch (err) {
-        res.status(500).send(e);
+        res.status(500).send(err);
     }
 
 })

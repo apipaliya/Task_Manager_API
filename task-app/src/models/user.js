@@ -47,7 +47,29 @@ const userSchema = new mongoose.Schema({
             require:true
         }
     }]
+},{
+    timestamps:true
 })
+ 
+//create virtual to make relationship between user and task
+userSchema.virtual('tasks',{
+    ref:"Task",
+    localField:"_id",
+    foreignField:"owner"
+})
+
+// create method to get only public details of logged user
+//1) userSchema.methods.getPublicProfile =  function () {
+userSchema.methods.toJSON  =  function () {
+    const user = this
+    const userObject = user.toObject()
+
+    delete userObject.password
+    delete userObject.tokens
+    // delete userObject.avatar
+    return userObject
+}
+
 
 //create method for generating auth token for user login
 userSchema.methods.generateAuthToken = async function () {
@@ -79,6 +101,13 @@ userSchema.pre('save', async function (next) {
     if (user.isModified('password')) {
         user.password = await bcrypt.hash(user.password, 8)
     }
+    next()
+})
+
+//Use this middleware to delete all tasks of user after user gets deleted
+userSchema.pre('remove', async function(next){
+    const user = this
+    await Task.deleteMany({owner:user._id})
     next()
 })
 
