@@ -12,7 +12,7 @@ const sendWelcomeMail = (name, email) => {
     })
 }
 
-const sendCancelationMail  = (email, name) => {
+const sendCancelationMail  = (name, email) => {
     sgMail.send({
         to: email,
         from: "apjp569@gmail.com",

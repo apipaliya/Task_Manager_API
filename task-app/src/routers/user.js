@@ -140,7 +140,7 @@ router.delete("/users/me", auth, async (req, res) => {
         // if (!user)
         //     return res.status(404).send("User not found")
         await req.user.remove()
-        sendCancelationMail(req.user.email , req.user.name)
+        sendCancelationMail(req.user.name , req.user.email)
         res.status(200).send(req.user)
     } catch (err) {
         res.status(400).send(err)
