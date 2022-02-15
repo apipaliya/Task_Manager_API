@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken")
 const User = require("../models/user")
-const {JWT_SECRETE} = require("../config/key")
 
 const auth = async (req, res, next) => {
     console.log("In auth.js")
@@ -8,7 +7,7 @@ const auth = async (req, res, next) => {
         console.log("token",req.header('Authorization'))
 
         const token = req.header('Authorization').split(" ")[1]
-        const decoded = jwt.verify(token,JWT_SECRETE)
+        const decoded = jwt.verify(token,process.env.JWT_SECRETE)
         const user = await User.findOne({_id:decoded._id ,'tokens.token':token})
         
         if(!user){
